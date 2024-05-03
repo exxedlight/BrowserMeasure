@@ -40,13 +40,20 @@ namespace BrowserMeasure
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
 
+
         Thread activeWindowTitleThread;
         CancellationTokenSource cancellationTokenSource;
+
+
 
         private const int UIA_ControlTypePropertyId = 30003;
         private const int UIA_EditControlTypeId = 50004;
 
+
+
         List<string> lastAdresses = new List<string>();
+
+
 
         public void HandleActiveWindow(TextBox logTextBox, CancellationToken cancellationToken)
         {

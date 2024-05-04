@@ -24,7 +24,7 @@ namespace BrowserMeasure.Entities
 
             try
             {
-                site = fullURL.Split('/')[2];
+                site = fullURL.Split('/').ElementAt(2);
             }
             catch { }
         }

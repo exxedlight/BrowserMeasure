@@ -37,9 +37,9 @@ namespace BrowserMeasure
         public UrlGetter(TextBox logTextBox)
         {
             logBox = logTextBox;
-            cancellationTokenSource = new CancellationTokenSource();
-            activeWindowTitleThread = new Thread(() => HandleActiveWindow(logTextBox, cancellationTokenSource.Token));
-            activeWindowTitleThread.IsBackground = true;
+            //cancellationTokenSource = new CancellationTokenSource();
+            //activeWindowTitleThread = new Thread(() => HandleActiveWindow(logTextBox, cancellationTokenSource.Token));
+            //activeWindowTitleThread.IsBackground = true;
         }
 
         public void Start()

@@ -33,6 +33,7 @@
             logTextBox = new TextBox();
             startPauseButton = new Button();
             trayIcon = new NotifyIcon(components);
+            FinishLink = new LinkLabel();
             SuspendLayout();
             // 
             // logTextBox
@@ -51,8 +52,11 @@
             // startPauseButton
             // 
             startPauseButton.FlatAppearance.BorderColor = Color.Lime;
+            startPauseButton.FlatAppearance.BorderSize = 0;
+            startPauseButton.FlatAppearance.MouseOverBackColor = Color.DarkGreen;
             startPauseButton.FlatStyle = FlatStyle.Flat;
             startPauseButton.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            startPauseButton.ForeColor = Color.ForestGreen;
             startPauseButton.Location = new Point(511, 12);
             startPauseButton.Name = "startPauseButton";
             startPauseButton.Size = new Size(277, 124);
@@ -70,12 +74,25 @@
             trayIcon.Text = "BrowserTime";
             trayIcon.MouseDoubleClick += trayIcon_MouseDoubleClick;
             // 
+            // FinishLink
+            // 
+            FinishLink.AutoSize = true;
+            FinishLink.LinkColor = Color.FromArgb(192, 255, 255);
+            FinishLink.Location = new Point(711, 426);
+            FinishLink.Name = "FinishLink";
+            FinishLink.Size = new Size(77, 15);
+            FinishLink.TabIndex = 2;
+            FinishLink.TabStop = true;
+            FinishLink.Text = "Finish service";
+            FinishLink.LinkClicked += FinishLink_LinkClicked;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(64, 64, 64);
             ClientSize = new Size(800, 450);
+            Controls.Add(FinishLink);
             Controls.Add(startPauseButton);
             Controls.Add(logTextBox);
             Name = "Form1";
@@ -91,5 +108,6 @@
         private TextBox logTextBox;
         private Button startPauseButton;
         private NotifyIcon trayIcon;
+        private LinkLabel FinishLink;
     }
 }

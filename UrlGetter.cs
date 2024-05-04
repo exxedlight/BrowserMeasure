@@ -12,7 +12,28 @@ namespace BrowserMeasure
 {
     internal class UrlGetter
     {
-        TextBox logBox;
+        TextBox logBox;                                         //  mainform log textbox
+        
+        Thread activeWindowTitleThread;                         //  monitoring thread
+        CancellationTokenSource cancellationTokenSource;        //  cancel tread
+
+        //  UI elements identifiers
+        private const int UIA_ControlTypePropertyId = 30003;
+        private const int UIA_EditControlTypeId = 50004;
+
+        //  
+        List<string> lastAdresses = new List<string>();
+
+        //  use windows-api dll`s
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
+
+
+        //  ===========================================================================================================
+
         public UrlGetter(TextBox logTextBox)
         {
             logBox = logTextBox;
@@ -34,56 +55,15 @@ namespace BrowserMeasure
         }
 
 
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
+        
 
 
-        Thread activeWindowTitleThread;
-        CancellationTokenSource cancellationTokenSource;
-
-
-
-        private const int UIA_ControlTypePropertyId = 30003;
-        private const int UIA_EditControlTypeId = 50004;
-
-
-
-        List<string> lastAdresses = new List<string>();
+        
 
 
 
         public void HandleActiveWindow(TextBox logTextBox, CancellationToken cancellationToken)
         {
-            /*string previousWindowTitle = string.Empty;
-            string currentSite = string.Empty;
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                string activeWindowTitle = GetActiveWindowTitle();
-
-                if (!string.IsNullOrEmpty(activeWindowTitle) && !activeWindowTitle.Equals(previousWindowTitle))
-                {
-                    previousWindowTitle = activeWindowTitle;
-                    List<string> parts = activeWindowTitle.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    currentSite = parts.Last();
-
-                    UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                        $"Active: {activeWindowTitle}\r\n" +
-                        $"Title: {currentSite}\r\n");
-
-                }
-                else if (string.IsNullOrEmpty(activeWindowTitle) && !string.IsNullOrEmpty(previousWindowTitle))
-                {
-                    previousWindowTitle = string.Empty;
-                    UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                        $"Passive: No active window\r\n");
-                }
-
-                Thread.Sleep(1000); // Пауза 1 секунда
-            }*/
 
             string previousWindowTitle = string.Empty;
             string currentWindow = string.Empty;
@@ -139,6 +119,12 @@ namespace BrowserMeasure
             }
 
         }
+
+        public void checkCurrentWindow()
+        {
+
+        }
+
         private void UpdateLogTextBox(TextBox logTextBox, string text)
         {
             if (logTextBox.InvokeRequired)
@@ -178,7 +164,7 @@ namespace BrowserMeasure
                                 if ((inputs.GetElement(i).GetCurrentPattern(10002) as IUIAutomationValuePattern).CurrentValue.StartsWith("http") && inputs.GetElement(i) != null)
                                 {
                                     url = (inputs.GetElement(i).GetCurrentPattern(10002) as IUIAutomationValuePattern).CurrentValue;
-                                    url = url.Split('/').ElementAt(2);
+                                    //url = url.Split('/').ElementAt(2);
                                     break;
                                 }
                             }

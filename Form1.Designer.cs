@@ -30,6 +30,11 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             logTextBox = new TextBox();
             startPauseButton = new Button();
             trayIcon = new NotifyIcon(components);
@@ -41,6 +46,10 @@
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
+            SitesTimeGrid = new DataGridView();
+            Site = new DataGridViewTextBoxColumn();
+            TotalTime = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)SitesTimeGrid).BeginInit();
             SuspendLayout();
             // 
             // logTextBox
@@ -170,12 +179,76 @@
             label7.TabIndex = 10;
             label7.Text = "s";
             // 
+            // SitesTimeGrid
+            // 
+            SitesTimeGrid.AllowUserToAddRows = false;
+            SitesTimeGrid.AllowUserToDeleteRows = false;
+            SitesTimeGrid.AllowUserToResizeRows = false;
+            dataGridViewCellStyle6.BackColor = Color.Black;
+            dataGridViewCellStyle6.ForeColor = Color.FromArgb(224, 224, 224);
+            SitesTimeGrid.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            SitesTimeGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            SitesTimeGrid.BackgroundColor = Color.FromArgb(80, 80, 80);
+            SitesTimeGrid.BorderStyle = BorderStyle.None;
+            SitesTimeGrid.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            SitesTimeGrid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = Color.Black;
+            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle7.ForeColor = SystemColors.Info;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            SitesTimeGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            SitesTimeGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            SitesTimeGrid.Columns.AddRange(new DataGridViewColumn[] { Site, TotalTime });
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = SystemColors.InfoText;
+            dataGridViewCellStyle9.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle9.ForeColor = SystemColors.ButtonFace;
+            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.False;
+            SitesTimeGrid.DefaultCellStyle = dataGridViewCellStyle9;
+            SitesTimeGrid.GridColor = Color.FromArgb(80, 80, 80);
+            SitesTimeGrid.Location = new Point(794, 12);
+            SitesTimeGrid.Name = "SitesTimeGrid";
+            SitesTimeGrid.ReadOnly = true;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = SystemColors.ActiveCaptionText;
+            dataGridViewCellStyle10.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
+            SitesTimeGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            SitesTimeGrid.RowHeadersVisible = false;
+            SitesTimeGrid.ScrollBars = ScrollBars.Vertical;
+            SitesTimeGrid.Size = new Size(437, 426);
+            SitesTimeGrid.TabIndex = 11;
+            // 
+            // Site
+            // 
+            dataGridViewCellStyle8.BackColor = Color.Black;
+            dataGridViewCellStyle8.ForeColor = Color.White;
+            Site.DefaultCellStyle = dataGridViewCellStyle8;
+            Site.HeaderText = "Site";
+            Site.Name = "Site";
+            Site.ReadOnly = true;
+            // 
+            // TotalTime
+            // 
+            TotalTime.HeaderText = "TotalTime";
+            TotalTime.Name = "TotalTime";
+            TotalTime.ReadOnly = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 30);
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1243, 448);
+            Controls.Add(SitesTimeGrid);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -190,6 +263,7 @@
             Text = "Form1";
             FormClosing += Form1_FormClosing;
             Resize += Form1_Resize;
+            ((System.ComponentModel.ISupportInitialize)SitesTimeGrid).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -207,5 +281,8 @@
         private Label label5;
         private Label label6;
         private Label label7;
+        private DataGridViewTextBoxColumn Site;
+        private DataGridViewTextBoxColumn TotalTime;
+        private DataGridView SitesTimeGrid;
     }
 }

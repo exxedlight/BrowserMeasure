@@ -8,6 +8,7 @@ using UIAutomationClient;
 using System.Windows.Forms.Automation;
 using System.Runtime.InteropServices;
 using System.ComponentModel.DataAnnotations;
+using BrowserMeasure.Entities;
 
 namespace BrowserMeasure
 {
@@ -15,6 +16,7 @@ namespace BrowserMeasure
     {
         TextBox logBox;                                         //  mainform log textbox
         Label HLabel, MLabel, SLabel;
+        DataGridView sGrid;
 
         Thread activeWindowTitleThread;                         //  monitoring thread
         CancellationTokenSource cancellationTokenSource;        //  cancel tread
@@ -36,13 +38,16 @@ namespace BrowserMeasure
 
         //  ===========================================================================================================
 
-        public UrlGetter(TextBox logTextBox, Label hlabel, Label mlabel, Label slabel)
+        public UrlGetter(TextBox logTextBox, Label hlabel, Label mlabel, Label slabel, DataGridView sitesGrid)
         {
             logBox = logTextBox;
             HLabel = hlabel;
             MLabel = mlabel;
             SLabel = slabel;
+            sGrid = sitesGrid;
         }
+
+        
 
         public void Start()
         {
@@ -58,6 +63,13 @@ namespace BrowserMeasure
         }
 
 
+
+
+
+        public void updateSitesGrid()
+        {
+            InvokeGrid(sGrid, StaticData.siteStats);
+        }
 
 
 
@@ -129,6 +141,7 @@ namespace BrowserMeasure
                         $"URL: {url}\r\n");
 
                     StaticData.pushApplication(currentWindow);
+                    StaticData.pushUrl(url);
                 }
             }
 
@@ -140,6 +153,7 @@ namespace BrowserMeasure
                 StaticData.BrowserFinished();
 
                 updateTime(StaticData.getAllBrowserTime());
+                updateSitesGrid();
             }
         }
 
@@ -151,6 +165,22 @@ namespace BrowserMeasure
                 label.BeginInvoke(new Action(() =>
                 {
                     label.Text = value.ToString("00");
+                }));
+            }
+        }
+        private void InvokeGrid(DataGridView grid, List<URLStat> site_stats)
+        {
+            if (grid.InvokeRequired)
+            {
+                grid.BeginInvoke(new Action(() =>
+                {
+                    grid.Rows.Clear();
+
+                    foreach (URLStat stat in site_stats)
+                    {
+                        sGrid.Rows.Add(stat.site, 
+                            new string($"{stat.elapsedTime.Hours:00}:{stat.elapsedTime.Minutes:00}:{stat.elapsedTime.Seconds:00}"));
+                    }
                 }));
             }
         }

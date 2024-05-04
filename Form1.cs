@@ -18,7 +18,7 @@ namespace BrowserMeasure
         public Form1()
         {
             InitializeComponent();
-            urlGetter = new UrlGetter(logTextBox, HLabel, MLabel, SLabel);
+            urlGetter = new UrlGetter(logTextBox, HLabel, MLabel, SLabel, SitesTimeGrid);
         }
 
 

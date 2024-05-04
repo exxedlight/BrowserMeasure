@@ -12,7 +12,7 @@ namespace BrowserMeasure
     {
         //  enter-leave statistisc for (applications) and (URLs)
         public static List<AppStat> appStats = new List<AppStat>();
-        public static List<URLStat> URLStats = new List<URLStat>();
+        public static List<URLStat> siteStats = new List<URLStat>();
 
 
         //  in file saved statistics for (browsers) and (URLs)
@@ -50,7 +50,7 @@ namespace BrowserMeasure
         {
             if (previosApp == null)
             {   //  no previos application - remember this
-                
+
                 previosApp = appname;
                 app_enterTime = DateTime.Now;   //  remember enter time
                 return;
@@ -58,7 +58,7 @@ namespace BrowserMeasure
 
             if (previosApp == appname)
             {   //  nothing to do if previos = current
-                
+
                 return;
             }
 
@@ -68,12 +68,47 @@ namespace BrowserMeasure
                 fixAppTimeInList(appname);
             }
         }
+        public static void pushUrl(string url)
+        {
+            string site;
+            
+            try { site = url.Split('/').ElementAt(2); }
+            catch { return; }
+
+            if (string.IsNullOrEmpty(site)) site = "Not handled";
+
+            if (previosSite == null)
+            {
+                previosSite = site;
+                site_enterTime = DateTime.Now;
+                return;
+            }
+
+            if(previosSite == site)
+            {
+                return;
+            }
+
+            if (previosSite != site)
+            {
+                fixSiteTimeInList(site, false);
+            }
+        }
+
         public static void BrowserFinished()
         {
+
             if (previosApp == null) return;
+            if (previosSite == null) return;
 
             fixAppTimeInList(null);
+            if(previosSite != null) fixSiteTimeInList(previosSite, true);
         }
+
+        /*private static void fixSiteOnFinishBrowser()
+        {
+            site_leaveTime
+        }*/
 
         private static void fixAppTimeInList(string? appname)
         {
@@ -114,10 +149,43 @@ namespace BrowserMeasure
             previosApp = appname;
             app_enterTime = DateTime.Now;
         }
-
-        public static void pushUrl(string url)
+        private static void fixSiteTimeInList(string? site, bool clearPrev)
         {
 
+            site_leaveTime = DateTime.Now;
+
+            //find current site in list
+            URLStat? currentUrlStat = siteStats.FirstOrDefault(x => x.site == site);
+
+            if (currentUrlStat == null)
+            {
+                URLStat newUrlStat = new URLStat();
+
+                //newUrlStat.fullURL = url;
+                newUrlStat.site = site;
+                newUrlStat.enterTime = site_enterTime;
+                newUrlStat.leaveTime = site_leaveTime;
+
+                newUrlStat.calculateElapsed();
+
+                siteStats.Add(newUrlStat);
+            }
+            else
+            {
+                currentUrlStat.enterTime = site_enterTime;
+                currentUrlStat.leaveTime = site_leaveTime;
+                currentUrlStat.calculateElapsed();
+
+                siteStats.Remove(siteStats.First(x => x.site == site));
+                siteStats.Add(currentUrlStat);
+            }
+
+            if (clearPrev) previosSite = null;
+            else previosSite = site;
+            
+            site_enterTime = DateTime.Now;
         }
+
+
     }
 }

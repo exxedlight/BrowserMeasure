@@ -13,20 +13,5 @@ namespace BrowserMeasure.Entities
         
         //  short site name, f.e. www.youtube.com
         public string site { get; set; } = "";
-
-
-
-        //  automatic mading site title from full URL
-        public void makeSiteFromURL()
-        {
-            if (string.IsNullOrWhiteSpace(fullURL))
-                return;
-
-            try
-            {
-                site = fullURL.Split('/').ElementAt(2);
-            }
-            catch { }
-        }
     }
 }

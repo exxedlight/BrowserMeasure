@@ -13,7 +13,7 @@ namespace BrowserMeasure
     internal class UrlGetter
     {
         TextBox logBox;                                         //  mainform log textbox
-        
+
         Thread activeWindowTitleThread;                         //  monitoring thread
         CancellationTokenSource cancellationTokenSource;        //  cancel tread
 
@@ -37,9 +37,6 @@ namespace BrowserMeasure
         public UrlGetter(TextBox logTextBox)
         {
             logBox = logTextBox;
-            //cancellationTokenSource = new CancellationTokenSource();
-            //activeWindowTitleThread = new Thread(() => HandleActiveWindow(logTextBox, cancellationTokenSource.Token));
-            //activeWindowTitleThread.IsBackground = true;
         }
 
         public void Start()
@@ -52,13 +49,14 @@ namespace BrowserMeasure
         public void Stop()
         {
             cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
         }
 
 
-        
 
 
-        
+
+
 
 
 
@@ -78,63 +76,69 @@ namespace BrowserMeasure
                     List<string> parts = activeWindowTitle.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     currentWindow = parts.Last();
 
-                    if (currentWindow.Equals("Opera"))
-                    {
-                        string? url = GetBrowserUrl("opera");
-                        if (!string.IsNullOrEmpty(url))
-                        {
-                            UpdateLogTextBox(logTextBox, $"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                                //$"Active: {activeWindowTitle}\r\n" +
-                                $"Title: {currentWindow}\r\n" +
-                                $"URL: {url}\r\n");
-                        }
-                    }
-                    if (currentWindow.Equals("Edge"))
-                    {
-                        string? url = GetBrowserUrl("msedge");
-                        if (!string.IsNullOrEmpty(url))
-                        {
-                            UpdateLogTextBox(logTextBox, $"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                                //$"Active: {activeWindowTitle}\r\n" +
-                                $"Title: {currentWindow}\r\n" +
-                                $"URL: {url}\r\n");
-                        }
-                    }
-
-                    else
-                    {
-                        UpdateLogTextBox(logTextBox, $"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                            //$"Active: {activeWindowTitle}\r\n" +
-                            $"Title: {currentWindow}\r\n");
-                    }
+                    checkCurrentWindow(currentWindow);
                 }
                 else if (string.IsNullOrEmpty(activeWindowTitle) && !string.IsNullOrEmpty(previousWindowTitle))
                 {
                     previousWindowTitle = string.Empty;
-                    UpdateLogTextBox(logTextBox, $"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
+                    UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
                         $"Passive: No active window\r\n");
                 }
 
-                Thread.Sleep(1000); // Пауза 1 секунда
+                Thread.Sleep(1000); // monitore every 1 second
             }
 
         }
 
-        public void checkCurrentWindow()
+        private string getProcessNameByTitle(string name)
         {
+            switch (name)
+            {
+                case "Opera":
+                    return "opera";
+                case "Edge":
+                    return "msedge";
 
+                //  case "another browsers":
+
+                default:
+                    return "Unknown";
+            }
         }
 
-        private void UpdateLogTextBox(TextBox logTextBox, string text)
+        public void checkCurrentWindow(string? currentWindow)
         {
-            if (logTextBox.InvokeRequired)
+            if (currentWindow == "Opera" ||
+                currentWindow == "Edge" 
+                // || currentWindow == "another browsers"
+               )
             {
-                logTextBox.BeginInvoke(new Action(() =>
+                string process_name = getProcessNameByTitle(currentWindow);
+                string? url = GetBrowserUrl(process_name);
+                if (!string.IsNullOrEmpty(url))
+                {
+                    UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
+                        $"Application: {currentWindow}\r\n" +
+                        $"URL: {url}\r\n");
+                }
+            }
+            else
+            {
+                UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
+                        $"Application: {currentWindow}\r\n");
+            }
+        }
+
+        private void UpdateLogTextBox(string text)
+        {
+            if (logBox.InvokeRequired)
+            {
+                logBox.BeginInvoke(new Action(() =>
                 {
                     lastAdresses.Add(text + "\r\n");
                     if (lastAdresses.Count > 7) lastAdresses.RemoveAt(0);
-                    logTextBox.Text = "";
-                    lastAdresses.ForEach(x => logTextBox.Text += x);
+                    logBox.Text = "";
+                    lastAdresses.ForEach(x => logBox.Text += x);
                 }));
 
             }
@@ -164,7 +168,6 @@ namespace BrowserMeasure
                                 if ((inputs.GetElement(i).GetCurrentPattern(10002) as IUIAutomationValuePattern).CurrentValue.StartsWith("http") && inputs.GetElement(i) != null)
                                 {
                                     url = (inputs.GetElement(i).GetCurrentPattern(10002) as IUIAutomationValuePattern).CurrentValue;
-                                    //url = url.Split('/').ElementAt(2);
                                     break;
                                 }
                             }

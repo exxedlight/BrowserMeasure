@@ -34,6 +34,13 @@
             startPauseButton = new Button();
             trayIcon = new NotifyIcon(components);
             FinishLink = new LinkLabel();
+            label1 = new Label();
+            HLabel = new Label();
+            SLabel = new Label();
+            MLabel = new Label();
+            label5 = new Label();
+            label6 = new Label();
+            label7 = new Label();
             SuspendLayout();
             // 
             // logTextBox
@@ -86,12 +93,96 @@
             FinishLink.Text = "Finish service";
             FinishLink.LinkClicked += FinishLink_LinkClicked;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Impact", 24F);
+            label1.ForeColor = SystemColors.ButtonFace;
+            label1.Location = new Point(511, 220);
+            label1.Name = "label1";
+            label1.Size = new Size(260, 39);
+            label1.TabIndex = 4;
+            label1.Text = "Total browser time";
+            // 
+            // HLabel
+            // 
+            HLabel.AutoSize = true;
+            HLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
+            HLabel.ForeColor = Color.DarkCyan;
+            HLabel.Location = new Point(511, 259);
+            HLabel.Name = "HLabel";
+            HLabel.Size = new Size(51, 39);
+            HLabel.TabIndex = 5;
+            HLabel.Text = "00";
+            // 
+            // SLabel
+            // 
+            SLabel.AutoSize = true;
+            SLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
+            SLabel.ForeColor = Color.DarkCyan;
+            SLabel.Location = new Point(685, 259);
+            SLabel.Name = "SLabel";
+            SLabel.Size = new Size(51, 39);
+            SLabel.TabIndex = 6;
+            SLabel.Text = "00";
+            // 
+            // MLabel
+            // 
+            MLabel.AutoSize = true;
+            MLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
+            MLabel.ForeColor = Color.DarkCyan;
+            MLabel.Location = new Point(596, 259);
+            MLabel.Name = "MLabel";
+            MLabel.Size = new Size(51, 39);
+            MLabel.TabIndex = 7;
+            MLabel.Text = "00";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Impact", 24F);
+            label5.ForeColor = Color.FromArgb(81, 81, 81);
+            label5.Location = new Point(556, 259);
+            label5.Name = "label5";
+            label5.Size = new Size(34, 39);
+            label5.TabIndex = 8;
+            label5.Text = "h";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Impact", 24F);
+            label6.ForeColor = Color.FromArgb(81, 81, 81);
+            label6.Location = new Point(637, 259);
+            label6.Name = "label6";
+            label6.Size = new Size(42, 39);
+            label6.TabIndex = 9;
+            label6.Text = "m";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Impact", 24F);
+            label7.ForeColor = Color.FromArgb(81, 81, 81);
+            label7.Location = new Point(727, 259);
+            label7.Name = "label7";
+            label7.Size = new Size(32, 39);
+            label7.TabIndex = 10;
+            label7.Text = "s";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(64, 64, 64);
+            BackColor = Color.FromArgb(30, 30, 30);
             ClientSize = new Size(800, 450);
+            Controls.Add(label7);
+            Controls.Add(label6);
+            Controls.Add(label5);
+            Controls.Add(MLabel);
+            Controls.Add(SLabel);
+            Controls.Add(HLabel);
+            Controls.Add(label1);
             Controls.Add(FinishLink);
             Controls.Add(startPauseButton);
             Controls.Add(logTextBox);
@@ -109,5 +200,12 @@
         private Button startPauseButton;
         private NotifyIcon trayIcon;
         private LinkLabel FinishLink;
+        private Label label1;
+        private Label HLabel;
+        private Label SLabel;
+        private Label MLabel;
+        private Label label5;
+        private Label label6;
+        private Label label7;
     }
 }

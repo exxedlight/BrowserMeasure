@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using UIAutomationClient;
 using System.Windows.Forms.Automation;
 using System.Runtime.InteropServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace BrowserMeasure
 {
     internal class UrlGetter
     {
         TextBox logBox;                                         //  mainform log textbox
+        Label HLabel, MLabel, SLabel;
 
         Thread activeWindowTitleThread;                         //  monitoring thread
         CancellationTokenSource cancellationTokenSource;        //  cancel tread
@@ -34,9 +36,12 @@ namespace BrowserMeasure
 
         //  ===========================================================================================================
 
-        public UrlGetter(TextBox logTextBox)
+        public UrlGetter(TextBox logTextBox, Label hlabel, Label mlabel, Label slabel)
         {
             logBox = logTextBox;
+            HLabel = hlabel;
+            MLabel = mlabel;
+            SLabel = slabel;
         }
 
         public void Start()
@@ -62,7 +67,6 @@ namespace BrowserMeasure
 
         public void HandleActiveWindow(TextBox logTextBox, CancellationToken cancellationToken)
         {
-
             string previousWindowTitle = string.Empty;
             string currentWindow = string.Empty;
 
@@ -83,6 +87,8 @@ namespace BrowserMeasure
                     previousWindowTitle = string.Empty;
                     UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
                         $"Passive: No active window\r\n");
+
+                    StaticData.BrowserFinished();
                 }
 
                 Thread.Sleep(1000); // monitore every 1 second
@@ -107,10 +113,11 @@ namespace BrowserMeasure
         }
 
         public void checkCurrentWindow(string? currentWindow)
-        {
+        {   //  if current windows is browser window
+
             if (currentWindow == "Opera" ||
-                currentWindow == "Edge" 
-                // || currentWindow == "another browsers"
+                currentWindow == "Edge"
+               // || currentWindow == "another browsers"
                )
             {
                 string process_name = getProcessNameByTitle(currentWindow);
@@ -120,15 +127,42 @@ namespace BrowserMeasure
                     UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
                         $"Application: {currentWindow}\r\n" +
                         $"URL: {url}\r\n");
+
+                    StaticData.pushApplication(currentWindow);
                 }
             }
+
+            //  other application
             else
             {
                 UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
                         $"Application: {currentWindow}\r\n");
+                StaticData.BrowserFinished();
+
+                updateTime(StaticData.getAllBrowserTime());
             }
         }
 
+        //  put time value in some label
+        private void InvokeTimeLabel(Label label, int value)
+        {
+            if (label.InvokeRequired)
+            {
+                label.BeginInvoke(new Action(() =>
+                {
+                    label.Text = value.ToString("00");
+                }));
+            }
+        }
+        //  update time labels on the form
+        private void updateTime(TimeSpan time)
+        {
+            InvokeTimeLabel(HLabel, time.Hours);
+            InvokeTimeLabel(MLabel, time.Minutes);
+            InvokeTimeLabel(SLabel, time.Seconds);
+        }
+
+        //  push new messages on log textbox in realtime
         private void UpdateLogTextBox(string text)
         {
             if (logBox.InvokeRequired)
@@ -143,6 +177,9 @@ namespace BrowserMeasure
 
             }
         }
+
+
+        //  get URL from UI adres line, if adres line exist
         public string? GetBrowserUrl(string processName)
         {
             Process[] operaGXProcesses = Process.GetProcessesByName(processName);
@@ -183,6 +220,9 @@ namespace BrowserMeasure
 
             return null;
         }
+
+
+        //  get current active window title, if title exist
         static string GetActiveWindowTitle()
         {
             const int nChars = 256;

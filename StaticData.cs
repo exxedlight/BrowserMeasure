@@ -155,14 +155,14 @@ namespace BrowserMeasure
             site_leaveTime = DateTime.Now;
 
             //find current site in list
-            URLStat? currentUrlStat = siteStats.FirstOrDefault(x => x.site == site);
+            URLStat? currentUrlStat = siteStats.FirstOrDefault(x => x.site == previosSite);
 
             if (currentUrlStat == null)
             {
                 URLStat newUrlStat = new URLStat();
 
                 //newUrlStat.fullURL = url;
-                newUrlStat.site = site;
+                newUrlStat.site = previosSite;
                 newUrlStat.enterTime = site_enterTime;
                 newUrlStat.leaveTime = site_leaveTime;
 
@@ -176,7 +176,7 @@ namespace BrowserMeasure
                 currentUrlStat.leaveTime = site_leaveTime;
                 currentUrlStat.calculateElapsed();
 
-                siteStats.Remove(siteStats.First(x => x.site == site));
+                siteStats.Remove(siteStats.First(x => x.site == previosSite));
                 siteStats.Add(currentUrlStat);
             }
 

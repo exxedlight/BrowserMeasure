@@ -226,7 +226,7 @@ namespace BrowserMeasure
                         IUIAutomationCondition editCondition = automation.CreatePropertyCondition(UIA_ControlTypePropertyId, UIA_EditControlTypeId);
                         var addressBar = mainWindow.FindFirst(TreeScope.TreeScope_Descendants, editCondition);
                         IUIAutomationElementArray inputs = mainWindow.FindAll(TreeScope.TreeScope_Descendants, editCondition);
-                        if (addressBar != null)
+                        if (addressBar != null && inputs != null)
                         {
                             // Получаем паттерн значения для текущего элемента
                             string url = null;

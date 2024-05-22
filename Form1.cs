@@ -72,10 +72,13 @@ namespace BrowserMeasure
 
         private async void FinishLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {   //  exit program
-            hand_finish = true;
-            StaticData.SaveBrowserTime();
-            await urlGetter.SaveCurrentLogAsync();
-            Application.Exit();
+            if (MessageBox.Show("Really want to close program?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                hand_finish = true;
+                StaticData.SaveBrowserTime();
+                await urlGetter.SaveCurrentLogAsync();
+                Application.Exit();
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -91,7 +94,7 @@ namespace BrowserMeasure
 
         private void resetLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (MessageBox.Show("Дійсно скинути всі дані?", "Увага!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Are use sure?", "Attention!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 StaticData.ResetAllData();
             }

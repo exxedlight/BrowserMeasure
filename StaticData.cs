@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BrowserMeasure
@@ -16,9 +17,67 @@ namespace BrowserMeasure
 
 
         //  in file saved statistics for (browsers) and (URLs)
-        public static List<InstanseTotal> browsersTotal = new List<InstanseTotal>();
+        public static InstanseTotal browsersTotal = new InstanseTotal();
         public static List<InstanseTotal> urlsTotal = new List<InstanseTotal>();
 
+        public static void SaveBrowserTime()
+        {
+            //File.WriteAllText("browser_all.json", JsonSerializer.Serialize(browsersTotal, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText("app_stats.json", JsonSerializer.Serialize(appStats, new JsonSerializerOptions { WriteIndented = true }));
+            File.WriteAllText("site_stats.json", JsonSerializer.Serialize(siteStats, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        public static void LoadBrowserTime()
+        {
+            if (File.Exists("app_stats.json"))
+            {
+                try
+                {
+                    appStats = JsonSerializer.Deserialize<List<AppStat>>(File.ReadAllText("app_stats.json"));
+                }
+                catch
+                {
+                    File.Delete("app_stats.json");
+                    appStats = new List<AppStat>();
+                }
+            }
+
+            if (File.Exists("site_stats.json"))
+            {
+                try
+                {
+                    siteStats = JsonSerializer.Deserialize<List<URLStat>>(File.ReadAllText("site_stats.json"));
+                }
+                catch
+                {
+                    File.Delete("site_stats.json");
+                    siteStats = new List<URLStat>();
+                }
+            }
+        }
+
+        public static void ResetAllData()
+        {
+            if (File.Exists("app_stats.json"))
+            {
+                File.Delete("app_stats.json");
+            }
+            if (File.Exists("site_stats.json"))
+            {
+                File.Delete("site_stats.json");
+            }
+
+            appStats = new List<AppStat>();
+            siteStats = new List<URLStat>();
+
+            previosApp = null;
+            previosSite = null;
+
+            app_enterTime = null;
+            app_leaveTime = null;
+
+            site_enterTime = null;
+            site_leaveTime = null;
+        }
 
         //  titles of current app and site
         private static string? previosApp = null;
@@ -38,7 +97,7 @@ namespace BrowserMeasure
         {
             TimeSpan totalTime = TimeSpan.Zero;
 
-            foreach(AppStat stat in appStats)
+            foreach (AppStat stat in appStats)
             {
                 totalTime += stat.elapsedTime;
             }
@@ -71,7 +130,7 @@ namespace BrowserMeasure
         public static void pushUrl(string url)
         {
             string site;
-            
+
             try { site = url.Split('/').ElementAt(2); }
             catch { return; }
 
@@ -84,7 +143,7 @@ namespace BrowserMeasure
                 return;
             }
 
-            if(previosSite == site)
+            if (previosSite == site)
             {
                 return;
             }
@@ -102,13 +161,10 @@ namespace BrowserMeasure
             if (previosSite == null) return;
 
             fixAppTimeInList(null);
-            if(previosSite != null) fixSiteTimeInList(previosSite, true);
+            if (previosSite != null) fixSiteTimeInList(previosSite, true);
         }
 
-        /*private static void fixSiteOnFinishBrowser()
-        {
-            site_leaveTime
-        }*/
+
 
         private static void fixAppTimeInList(string? appname)
         {
@@ -127,10 +183,12 @@ namespace BrowserMeasure
                 newAppStat.AppName = previosApp;
                 newAppStat.enterTime = app_enterTime;
                 newAppStat.leaveTime = app_leaveTime;
-                
+
                 newAppStat.calculateElapsed();
 
                 appStats.Add(newAppStat);
+
+                browsersTotal.totalTime.Add(newAppStat.elapsedTime);
             }
             else
             {   //  app exist in list
@@ -143,6 +201,8 @@ namespace BrowserMeasure
                 //  replace object in list (remove, then add)
                 appStats.Remove(appStats.First(x => currentAppStat.AppName == x.AppName));
                 appStats.Add(currentAppStat);
+
+                browsersTotal.totalTime.Add(currentAppStat.elapsedTime);
             }
 
             //  remember new application name and its ender time 
@@ -182,7 +242,7 @@ namespace BrowserMeasure
 
             if (clearPrev) previosSite = null;
             else previosSite = site;
-            
+
             site_enterTime = DateTime.Now;
         }
 

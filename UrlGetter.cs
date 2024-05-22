@@ -9,6 +9,7 @@ using System.Windows.Forms.Automation;
 using System.Runtime.InteropServices;
 using System.ComponentModel.DataAnnotations;
 using BrowserMeasure.Entities;
+using System.Text.Json;
 
 namespace BrowserMeasure
 {
@@ -45,6 +46,7 @@ namespace BrowserMeasure
             MLabel = mlabel;
             SLabel = slabel;
             sGrid = sitesGrid;
+            LoadPrevLog();
         }
 
         
@@ -73,7 +75,69 @@ namespace BrowserMeasure
 
 
 
+        public async Task SaveCurrentLogAsync()
+        {
+            string logText = null;
 
+            if (logBox.InvokeRequired)
+            {
+                await Task.Run(() =>
+                {
+                    logBox.Invoke(new Action(() =>
+                    {
+                        logText = logBox.Text;
+                    }));
+                });
+            }
+            else
+            {
+                logText = logBox.Text;
+            }
+
+            if (logText != null) await File.WriteAllTextAsync("logBox.log", logText);
+
+            await File.WriteAllTextAsync("logStruct.json", JsonSerializer.Serialize(lastAdresses, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        public void LoadPrevLog()
+        {
+            string? logText = null;
+            if (File.Exists("logBox.log")) logText = File.ReadAllText("logBox.log");
+
+            if (logText != null)
+            {
+                logBox.BeginInvoke(new Action(() =>
+                {
+                    logBox.Text = logText;
+                }));
+            }
+
+            if (File.Exists("logStruct.json"))
+            {
+                try
+                {
+                    lastAdresses = JsonSerializer.Deserialize<List<string>>(File.ReadAllText("logStruct.json"));
+                }
+                catch
+                {
+                    File.Delete("logStruct.json");
+                    lastAdresses = new List<string>();
+                }
+            }
+        }
+        public void ClearAllLog()
+        {
+            if (File.Exists("logBox.log")) File.Delete("logBox.log");
+            if (File.Exists("logStruct.json")) File.Delete("logStruct.json");
+
+            lastAdresses = new List<string>();
+            if (logBox.InvokeRequired)
+            {
+                logBox.BeginInvoke(new Action(() =>
+                {
+                    logBox.Text = string.Empty;
+                }));
+            }
+        }
 
 
 
@@ -92,7 +156,7 @@ namespace BrowserMeasure
                     List<string> parts = activeWindowTitle.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     currentWindow = parts.Last();
 
-                    checkCurrentWindow(currentWindow);
+                    checkCurrentWindow(activeWindowTitle, currentWindow);
                 }
                 else if (string.IsNullOrEmpty(activeWindowTitle) && !string.IsNullOrEmpty(previousWindowTitle))
                 {
@@ -103,7 +167,7 @@ namespace BrowserMeasure
                     StaticData.BrowserFinished();
                 }
 
-                Thread.Sleep(1000); // monitore every 1 second
+                Thread.Sleep(1500); // monitore every 1 second
             }
 
         }
@@ -116,6 +180,8 @@ namespace BrowserMeasure
                     return "opera";
                 case "Edge":
                     return "msedge";
+                case "Chrome":
+                    return "chrome";
 
                 //  case "another browsers":
 
@@ -124,11 +190,12 @@ namespace BrowserMeasure
             }
         }
 
-        public void checkCurrentWindow(string? currentWindow)
+        public void checkCurrentWindow(string? fullName, string? currentWindow)
         {   //  if current windows is browser window
 
             if (currentWindow == "Opera" ||
-                currentWindow == "Edge"
+                currentWindow == "Edge" ||
+                currentWindow == "Chrome"
                // || currentWindow == "another browsers"
                )
             {
@@ -137,7 +204,7 @@ namespace BrowserMeasure
                 if (!string.IsNullOrEmpty(url))
                 {
                     UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                        $"Application: {currentWindow}\r\n" +
+                        $"Application: {fullName}\r\n" +
                         $"URL: {url}\r\n");
 
                     StaticData.pushApplication(currentWindow);
@@ -149,7 +216,7 @@ namespace BrowserMeasure
             else
             {
                 UpdateLogTextBox($"{DateTime.Now.ToString("HH:mm:ss")}\r\n" +
-                        $"Application: {currentWindow}\r\n");
+                        $"Application: {fullName}\r\n");
                 StaticData.BrowserFinished();
 
                 updateTime(StaticData.getAllBrowserTime());
@@ -199,10 +266,22 @@ namespace BrowserMeasure
             {
                 logBox.BeginInvoke(new Action(() =>
                 {
-                    lastAdresses.Add(text + "\r\n");
-                    if (lastAdresses.Count > 7) lastAdresses.RemoveAt(0);
-                    logBox.Text = "";
-                    lastAdresses.ForEach(x => logBox.Text += x);
+
+                    lastAdresses.Insert(0, text + "\r\n");
+                    
+                    if(logBox.Text.Length + lastAdresses[0].Length > Int32.MaxValue-5000)
+                    {
+                        File.WriteAllText($"log_{DateTime.Now.ToString("dd.MM.yyyy.HH.mm.ss.ff")}.log", logBox.Text);
+                        File.WriteAllTextAsync($"logStruct_{DateTime.Now.ToString("dd.MM.yyyy.HH.mm.ss.ff")}.json", JsonSerializer.Serialize(lastAdresses, new JsonSerializerOptions { WriteIndented = true }));
+
+                        lastAdresses.RemoveRange(1, lastAdresses.Count-2);
+
+                        logBox.Text = "[Overflow] Log overflowed, prev log saved to file in program directory, current log cleaned\n\r";
+                        logBox.Text = lastAdresses[0] + logBox.Text;
+                    }
+                    else
+                        logBox.Text = lastAdresses[0] + logBox.Text;
+
                 }));
 
             }

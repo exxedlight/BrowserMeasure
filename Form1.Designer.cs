@@ -49,7 +49,17 @@
             SitesTimeGrid = new DataGridView();
             Site = new DataGridViewTextBoxColumn();
             TotalTime = new DataGridViewTextBoxColumn();
+            resetLinkLabel = new LinkLabel();
+            label2 = new Label();
+            showSitesStatButton = new LinkLabel();
+            ShowLogButton = new LinkLabel();
+            closeLogButton = new Button();
+            closeSitesStatsButton = new Button();
+            panel1 = new Panel();
+            panel2 = new Panel();
             ((System.ComponentModel.ISupportInitialize)SitesTimeGrid).BeginInit();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // logTextBox
@@ -58,11 +68,13 @@
             logTextBox.BorderStyle = BorderStyle.None;
             logTextBox.Font = new Font("Comic Sans MS", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             logTextBox.ForeColor = Color.ForestGreen;
-            logTextBox.Location = new Point(12, 12);
+            logTextBox.Location = new Point(8, 53);
+            logTextBox.MaxLength = int.MaxValue;
             logTextBox.Multiline = true;
             logTextBox.Name = "logTextBox";
             logTextBox.ReadOnly = true;
-            logTextBox.Size = new Size(493, 426);
+            logTextBox.ScrollBars = ScrollBars.Vertical;
+            logTextBox.Size = new Size(617, 282);
             logTextBox.TabIndex = 0;
             // 
             // startPauseButton
@@ -73,9 +85,9 @@
             startPauseButton.FlatStyle = FlatStyle.Flat;
             startPauseButton.Font = new Font("Segoe UI", 48F, FontStyle.Bold, GraphicsUnit.Point, 204);
             startPauseButton.ForeColor = Color.ForestGreen;
-            startPauseButton.Location = new Point(511, 12);
+            startPauseButton.Location = new Point(22, 57);
             startPauseButton.Name = "startPauseButton";
-            startPauseButton.Size = new Size(277, 124);
+            startPauseButton.Size = new Size(351, 129);
             startPauseButton.TabIndex = 1;
             startPauseButton.Text = "Start";
             startPauseButton.UseVisualStyleBackColor = true;
@@ -93,10 +105,12 @@
             // FinishLink
             // 
             FinishLink.AutoSize = true;
+            FinishLink.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            FinishLink.LinkBehavior = LinkBehavior.HoverUnderline;
             FinishLink.LinkColor = Color.FromArgb(192, 255, 255);
-            FinishLink.Location = new Point(711, 426);
+            FinishLink.Location = new Point(22, 228);
             FinishLink.Name = "FinishLink";
-            FinishLink.Size = new Size(77, 15);
+            FinishLink.Size = new Size(135, 19);
             FinishLink.TabIndex = 2;
             FinishLink.TabStop = true;
             FinishLink.Text = "Finish service";
@@ -107,7 +121,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Impact", 24F);
             label1.ForeColor = SystemColors.ButtonFace;
-            label1.Location = new Point(511, 220);
+            label1.Location = new Point(379, 57);
             label1.Name = "label1";
             label1.Size = new Size(260, 39);
             label1.TabIndex = 4;
@@ -118,7 +132,7 @@
             HLabel.AutoSize = true;
             HLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
             HLabel.ForeColor = Color.DarkCyan;
-            HLabel.Location = new Point(511, 259);
+            HLabel.Location = new Point(384, 105);
             HLabel.Name = "HLabel";
             HLabel.Size = new Size(51, 39);
             HLabel.TabIndex = 5;
@@ -129,7 +143,7 @@
             SLabel.AutoSize = true;
             SLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
             SLabel.ForeColor = Color.DarkCyan;
-            SLabel.Location = new Point(685, 259);
+            SLabel.Location = new Point(558, 105);
             SLabel.Name = "SLabel";
             SLabel.Size = new Size(51, 39);
             SLabel.TabIndex = 6;
@@ -140,7 +154,7 @@
             MLabel.AutoSize = true;
             MLabel.Font = new Font("Impact", 24F, FontStyle.Underline);
             MLabel.ForeColor = Color.DarkCyan;
-            MLabel.Location = new Point(596, 259);
+            MLabel.Location = new Point(469, 105);
             MLabel.Name = "MLabel";
             MLabel.Size = new Size(51, 39);
             MLabel.TabIndex = 7;
@@ -151,7 +165,7 @@
             label5.AutoSize = true;
             label5.Font = new Font("Impact", 24F);
             label5.ForeColor = Color.FromArgb(81, 81, 81);
-            label5.Location = new Point(556, 259);
+            label5.Location = new Point(429, 105);
             label5.Name = "label5";
             label5.Size = new Size(34, 39);
             label5.TabIndex = 8;
@@ -162,7 +176,7 @@
             label6.AutoSize = true;
             label6.Font = new Font("Impact", 24F);
             label6.ForeColor = Color.FromArgb(81, 81, 81);
-            label6.Location = new Point(637, 259);
+            label6.Location = new Point(510, 105);
             label6.Name = "label6";
             label6.Size = new Size(42, 39);
             label6.TabIndex = 9;
@@ -173,7 +187,7 @@
             label7.AutoSize = true;
             label7.Font = new Font("Impact", 24F);
             label7.ForeColor = Color.FromArgb(81, 81, 81);
-            label7.Location = new Point(727, 259);
+            label7.Location = new Point(600, 105);
             label7.Name = "label7";
             label7.Size = new Size(32, 39);
             label7.TabIndex = 10;
@@ -211,7 +225,7 @@
             dataGridViewCellStyle9.WrapMode = DataGridViewTriState.False;
             SitesTimeGrid.DefaultCellStyle = dataGridViewCellStyle9;
             SitesTimeGrid.GridColor = Color.FromArgb(80, 80, 80);
-            SitesTimeGrid.Location = new Point(794, 12);
+            SitesTimeGrid.Location = new Point(3, 50);
             SitesTimeGrid.Name = "SitesTimeGrid";
             SitesTimeGrid.ReadOnly = true;
             dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -224,7 +238,7 @@
             SitesTimeGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle10;
             SitesTimeGrid.RowHeadersVisible = false;
             SitesTimeGrid.ScrollBars = ScrollBars.Vertical;
-            SitesTimeGrid.Size = new Size(437, 426);
+            SitesTimeGrid.Size = new Size(437, 593);
             SitesTimeGrid.TabIndex = 11;
             // 
             // Site
@@ -242,13 +256,127 @@
             TotalTime.Name = "TotalTime";
             TotalTime.ReadOnly = true;
             // 
+            // resetLinkLabel
+            // 
+            resetLinkLabel.AutoSize = true;
+            resetLinkLabel.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            resetLinkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
+            resetLinkLabel.LinkColor = Color.FromArgb(192, 255, 255);
+            resetLinkLabel.Location = new Point(384, 167);
+            resetLinkLabel.Name = "resetLinkLabel";
+            resetLinkLabel.Size = new Size(146, 19);
+            resetLinkLabel.TabIndex = 12;
+            resetLinkLabel.TabStop = true;
+            resetLinkLabel.Text = "↺ Reset timer ↺";
+            resetLinkLabel.LinkClicked += resetLinkLabel_LinkClicked;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI Historic", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.Lime;
+            label2.Location = new Point(3, 25);
+            label2.Name = "label2";
+            label2.Size = new Size(51, 25);
+            label2.TabIndex = 13;
+            label2.Text = "Log:";
+            // 
+            // showSitesStatButton
+            // 
+            showSitesStatButton.AutoSize = true;
+            showSitesStatButton.Font = new Font("Consolas", 15F);
+            showSitesStatButton.LinkBehavior = LinkBehavior.HoverUnderline;
+            showSitesStatButton.LinkColor = Color.FromArgb(192, 255, 255);
+            showSitesStatButton.Location = new Point(339, 294);
+            showSitesStatButton.Name = "showSitesStatButton";
+            showSitesStatButton.Size = new Size(298, 23);
+            showSitesStatButton.TabIndex = 14;
+            showSitesStatButton.TabStop = true;
+            showSitesStatButton.Text = "Show sites staticstics >⤕>";
+            showSitesStatButton.LinkClicked += showSitesStatButton_LinkClicked;
+            // 
+            // ShowLogButton
+            // 
+            ShowLogButton.AutoSize = true;
+            ShowLogButton.Font = new Font("Consolas", 15F);
+            ShowLogButton.LinkBehavior = LinkBehavior.HoverUnderline;
+            ShowLogButton.LinkColor = Color.FromArgb(192, 255, 255);
+            ShowLogButton.Location = new Point(22, 294);
+            ShowLogButton.Name = "ShowLogButton";
+            ShowLogButton.Size = new Size(142, 23);
+            ShowLogButton.TabIndex = 15;
+            ShowLogButton.TabStop = true;
+            ShowLogButton.Text = "↨ Show log ↨";
+            ShowLogButton.LinkClicked += ShowLogButton_LinkClicked;
+            // 
+            // closeLogButton
+            // 
+            closeLogButton.FlatAppearance.BorderColor = Color.Lime;
+            closeLogButton.FlatAppearance.BorderSize = 0;
+            closeLogButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(192, 0, 0);
+            closeLogButton.FlatStyle = FlatStyle.Flat;
+            closeLogButton.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            closeLogButton.ForeColor = Color.Gray;
+            closeLogButton.Location = new Point(528, 8);
+            closeLogButton.Margin = new Padding(0);
+            closeLogButton.Name = "closeLogButton";
+            closeLogButton.Padding = new Padding(1);
+            closeLogButton.Size = new Size(97, 42);
+            closeLogButton.TabIndex = 16;
+            closeLogButton.Text = "⛌";
+            closeLogButton.UseVisualStyleBackColor = true;
+            closeLogButton.Click += closeLogButton_Click;
+            // 
+            // closeSitesStatsButton
+            // 
+            closeSitesStatsButton.FlatAppearance.BorderColor = Color.Lime;
+            closeSitesStatsButton.FlatAppearance.BorderSize = 0;
+            closeSitesStatsButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(192, 0, 0);
+            closeSitesStatsButton.FlatStyle = FlatStyle.Flat;
+            closeSitesStatsButton.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            closeSitesStatsButton.ForeColor = Color.Gray;
+            closeSitesStatsButton.Location = new Point(343, 2);
+            closeSitesStatsButton.Margin = new Padding(0);
+            closeSitesStatsButton.Name = "closeSitesStatsButton";
+            closeSitesStatsButton.Padding = new Padding(1);
+            closeSitesStatsButton.Size = new Size(97, 42);
+            closeSitesStatsButton.TabIndex = 17;
+            closeSitesStatsButton.Text = "⛌";
+            closeSitesStatsButton.UseVisualStyleBackColor = true;
+            closeSitesStatsButton.Click += closeSitesStatsButton_Click;
+            // 
+            // panel1
+            // 
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(logTextBox);
+            panel1.Controls.Add(closeLogButton);
+            panel1.Location = new Point(22, 320);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(638, 421);
+            panel1.TabIndex = 18;
+            // 
+            // panel2
+            // 
+            panel2.BorderStyle = BorderStyle.FixedSingle;
+            panel2.Controls.Add(SitesTimeGrid);
+            panel2.Controls.Add(closeSitesStatsButton);
+            panel2.Location = new Point(681, 12);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(616, 702);
+            panel2.TabIndex = 19;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 30);
-            ClientSize = new Size(1243, 448);
-            Controls.Add(SitesTimeGrid);
+            ClientSize = new Size(643, 320);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
+            Controls.Add(ShowLogButton);
+            Controls.Add(showSitesStatButton);
+            Controls.Add(resetLinkLabel);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -258,12 +386,18 @@
             Controls.Add(label1);
             Controls.Add(FinishLink);
             Controls.Add(startPauseButton);
-            Controls.Add(logTextBox);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "Form1";
             Text = "Form1";
             FormClosing += Form1_FormClosing;
+            FormClosed += Form1_FormClosed;
+            Load += Form1_Load;
+            Shown += Form1_Shown;
             Resize += Form1_Resize;
             ((System.ComponentModel.ISupportInitialize)SitesTimeGrid).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -284,5 +418,13 @@
         private DataGridViewTextBoxColumn Site;
         private DataGridViewTextBoxColumn TotalTime;
         private DataGridView SitesTimeGrid;
+        private LinkLabel resetLinkLabel;
+        private Label label2;
+        private LinkLabel showSitesStatButton;
+        private LinkLabel ShowLogButton;
+        private Button closeLogButton;
+        private Button closeSitesStatsButton;
+        private Panel panel1;
+        private Panel panel2;
     }
 }

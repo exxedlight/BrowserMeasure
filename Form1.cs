@@ -18,7 +18,6 @@ namespace BrowserMeasure
         public Form1()
         {
             InitializeComponent();
-            urlGetter = new UrlGetter(logTextBox, HLabel, MLabel, SLabel, SitesTimeGrid);
         }
 
 
@@ -51,6 +50,7 @@ namespace BrowserMeasure
             }
             this.Hide();
             trayIcon.Visible = true;
+            StaticData.SaveBrowserTime();
         }
 
         private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -66,13 +66,73 @@ namespace BrowserMeasure
             {
                 this.Hide();
                 trayIcon.Visible = true;
+                StaticData.SaveBrowserTime();
             }
         }
 
-        private void FinishLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private async void FinishLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {   //  exit program
             hand_finish = true;
+            StaticData.SaveBrowserTime();
+            await urlGetter.SaveCurrentLogAsync();
             Application.Exit();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StaticData.SaveBrowserTime();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            StaticData.LoadBrowserTime();
+            startPauseButton.PerformClick();
+        }
+
+        private void resetLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (MessageBox.Show("Дійсно скинути всі дані?", "Увага!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                StaticData.ResetAllData();
+            }
+
+            SitesTimeGrid.Rows.Clear();
+            HLabel.Text = "00";
+            MLabel.Text = "00";
+            SLabel.Text = "00";
+            urlGetter.ClearAllLog();
+        }
+
+        private void ShowLogButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Height = 703;
+            ShowLogButton.Visible = false;
+            SitesTimeGrid.Height = 591;
+        }
+        private void closeLogButton_Click(object sender, EventArgs e)
+        {
+            this.Height = 359;
+            ShowLogButton.Visible = true;
+            SitesTimeGrid.Height = 254;
+        }
+
+        //  min size 659; 359
+
+        private void showSitesStatButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Width = 1145;
+            showSitesStatButton.Visible = false;
+        }
+
+        private void closeSitesStatsButton_Click(object sender, EventArgs e)
+        {
+            this.Width = 659;
+            showSitesStatButton.Visible = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            urlGetter = new UrlGetter(logTextBox, HLabel, MLabel, SLabel, SitesTimeGrid);
         }
     }
 }
